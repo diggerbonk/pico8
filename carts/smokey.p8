@@ -6,12 +6,15 @@ function _init()
   beers = 0
   beerctr = 0
  
-  lanes = {320,496,672,848}
-  beerlane = 2
+  beerslots = {320,496,672,848}
+  beerslot = 2
+
+  carslots = {288,464,640,816}
+  carslot = 2
+  carx = 464
     
   yoff=0
-  x=464
-  cx=464
+--  x=464
   vel=240
   maxvel=400
   minvel=240
@@ -36,23 +39,23 @@ function add_beer()
   end
 
   rx = flr(rnd(3)) - 1
-  beerlane += rx
+  beerslot += rx
   
-  if beerlane < 1 then
-    beerlane = 1 
-  elseif beerlane > 4 then
-    beerlane = 4 
+  if beerslot < 1 then
+    beerslot = 1 
+  elseif beerslot > 4 then
+    beerslot = 4 
   end
      
   beer[newbeerindex] = {}
-  beer[newbeerindex].x = lanes[beerlane]
+  beer[newbeerindex].x = beerslots[beerslot]
   beer[newbeerindex].y = -128
 end
 
 function _update()
 
   beerctr += vel
-  if beerctr > 2000 then
+  if beerctr > 3000 then
     beerctr = 0
     add_beer()
   end
@@ -64,14 +67,14 @@ function _update()
   y=1040-(vel)
   
   if btnp(⬅️) then
-    x = x - 176
-    if x < 288 then
-      x = 288
+    carslot -= 1
+    if carslot < 1 then
+      carslot = 1
     end
   elseif btnp(➡️) then
-    x = x + 176
-    if x > 816 then
-      x = 816
+    carslot += 1
+    if carslot > 4 then
+      carslot = 4
     end
   end
   
@@ -87,10 +90,16 @@ function _update()
     end
   end
   
-  if cx > x then
-    cx -= 44
-  elseif cx < x then
-    cx += 44
+  if carx > carslots[carslot] then
+    carx -= 44 
+    if carx < carslots[1] then
+      carx = carslots[1]
+    end
+  elseif carx < carslots[carslot] then
+    carx += 44
+    if carx > carslots[carslot] then
+      carx = carslots[carslot]
+    end
   end
  
   for i=1, beers do
@@ -104,7 +113,7 @@ function _update()
 end
 
 function _draw()
-  cls()
+  --cls()
   istart = ceil(yoff/16)*-16
   for i=istart, 128-istart,16 do
     camera(0,(yoff)*-1)
@@ -113,12 +122,20 @@ function _draw()
   palt(0,false)
   camera(0,0)
   
-  if cx == x then
-    spr(1,cx/8,y/8,2,3)
-  elseif cx > x then
-    spr_r(1,cx/8,y/8,-6,2,3)
-  else
-    spr_r(1,cx/8,y/8,6,2,3)
+  if carx == carslots[carslot] then
+    spr(1,carx/8,y/8,2,3)
+  elseif carx > (carslots[carslot] + 110) then
+    spr_r(1,carx/8,y/8,-3,2,3)
+  elseif carx > (carslots[carslot] + 44) then
+    spr_r(1,carx/8,y/8,-6,2,3)
+  elseif carx > (carslots[carslot]) then
+    spr_r(1,carx/8,y/8,-3,2,3)
+  elseif carx < (carslots[carslot] - 110) then
+    spr_r(1,carx/8,y/8,3,2,3)
+  elseif carx < (carslots[carslot] - 44) then
+    spr_r(1,carx/8,y/8,6,2,3)
+  elseif carx < (carslots[carslot]) then
+    spr_r(1,carx/8,y/8,3,2,3)
   end
   
   for i=1, beers do
@@ -128,8 +145,8 @@ function _draw()
   end
   
   print("" .. flr(vel),0,0)
-  print("" .. cx/8,0,8)
-  print("" .. x/8,0,16)
+  print("" .. carx,0,8)
+  print("" .. carslots[carslot],0,16)
 end
 
 
