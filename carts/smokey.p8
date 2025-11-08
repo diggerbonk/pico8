@@ -1,78 +1,77 @@
 pico-8 cartridge // http://www.pico-8.com
-version 29
+version 43
 __lua__
 function _init()
   beer = {}
   beers = 0
   beerctr = 0
-  beerx = 52
+ 
+  lanes = {320,496,672,848}
+  beerlane = 2
     
   yoff=0
-  x=58
-  cx=58
-  vel=30
-  maxvel=50
-  minvel=30
-  y=130-(vel)
+  x=464
+  cx=464
+  vel=240
+  maxvel=400
+  minvel=240
+  y=1040-(vel)
   add_beer()
 end
 
 function add_beer()
+
   -- find a free beer
-  nidx=-1
+  newbeerindex=-1
   for i=1, beers do
-    if beer[i].x == 0 then
+    if beer[i].x/8 == 0 then
       idx=i
       break
     end
   end
   
-  if nidx < 0 then
+  if newbeerindex < 0 then
      beers += 1
-     nidx = beers
+     newbeerindex = beers
   end
 
-  rx = flr(rnd(3))
-  if rx == 0 then
-    beerx -= 22
-  elseif rx == 2 then
-    beerx += 22
-  end
+  rx = flr(rnd(3)) - 1
+  beerlane += rx
   
-  if beerx < 40 then
-    beerx = 40
-  elseif beerx > 106 then
-    beerx = 106
+  if beerlane < 1 then
+    beerlane = 1 
+  elseif beerlane > 4 then
+    beerlane = 4 
   end
      
-  beer[nidx] = {}
-  beer[nidx].x = beerx
-  beer[nidx].y = -16
+  beer[newbeerindex] = {}
+  beer[newbeerindex].x = lanes[beerlane]
+  beer[newbeerindex].y = -128
 end
 
 function _update()
 
   beerctr += vel
-  if beerctr > 250 then
+  if beerctr > 2000 then
     beerctr = 0
     add_beer()
   end
   
-  yoff+=(vel/10)
-  if yoff > 128 then
+  yoff+=(vel/80)
+  if yoff > 1024 then
     yoff=0
   end
-  y=130-(vel)
+  y=1040-(vel)
   
   if btnp(⬅️) then
-    x = x - 22
-    if x < 36 then
-      x = 36
+    x = x - 176
+    if x < 288 then
+      x = 288
     end
   elseif btnp(➡️) then
-    x = x + 22
-    if x > 102 then
-      x = 102
+    x = x + 176
+    if x > 816 then
+      x = 816
     end
   end
   
@@ -89,15 +88,15 @@ function _update()
   end
   
   if cx > x then
-    cx -= 5.5
+    cx -= 44
   elseif cx < x then
-    cx += 5.5
+    cx += 44
   end
  
   for i=1, beers do
     if beer[i].x > 0 then
        beer[i].y += (vel/10)
-       if beer[i].y > 128 then
+       if beer[i].y > 1024 then
           beer[i].x = 0
        end
     end
@@ -108,29 +107,29 @@ function _draw()
   cls()
   istart = ceil(yoff/16)*-16
   for i=istart, 128-istart,16 do
-    camera(0,yoff*-1)
+    camera(0,(yoff)*-1)
     map(0,0, 0,i,16,2)
   end
   palt(0,false)
   camera(0,0)
   
   if cx == x then
-    spr(1,cx,y,2,3)
+    spr(1,cx/8,y/8,2,3)
   elseif cx > x then
-    spr_r(1,cx,y,-6,2,3)
+    spr_r(1,cx/8,y/8,-6,2,3)
   else
-    spr_r(1,cx,y,6,2,3)
+    spr_r(1,cx/8,y/8,6,2,3)
   end
   
   for i=1, beers do
     if beer[i].x > 0 then
-      spr(39,beer[i].x,beer[i].y)
+      spr(39,beer[i].x/8,beer[i].y/8)
     end
   end
   
-  print("" .. flr(vel*10),0,0)
-  print("" .. cx,0,8)
-  print("" .. x,0,16)
+  print("" .. flr(vel),0,0)
+  print("" .. cx/8,0,8)
+  print("" .. x/8,0,16)
 end
 
 
