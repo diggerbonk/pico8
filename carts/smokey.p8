@@ -55,6 +55,16 @@ function add_beer()
   beer[newbeerindex].y = -128
 end
 
+function checkbeercollision(thebeer)
+
+   if (thebeer.x > (carx - 32) and 
+       thebeer.x < (carx + 96) and 
+       thebeer.y > (cary - 40) and 
+       thebeer.y < (cary + 128)) then
+      thebeer.x = -1
+   end
+end
+ 
 function _update()
 
   -- See if it is time to add
@@ -132,11 +142,13 @@ function _update()
        if beer[i].y > 1024 then
           beer[i].x = 0
        end
+       checkbeercollision(beer[i])
     end
   end
 
   -- detect collisions between 
   -- car and beer
+  
 
   -- detect collision between 
   -- car and borders
