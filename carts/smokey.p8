@@ -3,9 +3,9 @@ version 43
 __lua__
  function _init()
 
-  vel=240
+  vel=0
   maxvel=440
-  minvel=220
+  minvel=0
   yoff=0
 
   beer = {}
@@ -19,7 +19,7 @@ __lua__
   carslot = 2
   oldslot = 2
   carx = carslots[carslot]
-  cary = 1040-(vel)
+  cary = 832-(vel/2)
   carangle = 0
     
   add_beer()
@@ -84,7 +84,7 @@ function _update()
 
   -- adjust car position per 
   -- current velocity
-  cary=1040-(vel)
+  cary=832-(vel/2)
   
   -- move car left and right
   if btnp(⬅️) then
@@ -101,12 +101,12 @@ function _update()
   
   -- adjust car velocity
   if btn(⬆️) then
-    vel += 1
+    vel += 4
     if vel > maxvel then
       vel = maxvel
     end
   elseif btn(⬇️) then
-    vel -= 1
+    vel -= 4
     if vel < minvel then
       vel = minvel
     end
